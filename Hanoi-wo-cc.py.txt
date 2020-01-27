@@ -1,3 +1,6 @@
+# Non-recursive Towers of Hanoi game with option to choose the number of disks
+# No mouse events! 
+# Python 3.8 
 
 
 import tkinter as tk
