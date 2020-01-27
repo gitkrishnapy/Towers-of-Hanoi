@@ -1,0 +1,374 @@
+
+
+import tkinter as tk
+from tkinter import messagebox
+import random
+
+
+peglist = []
+#pegtaglist = [] 
+tlist = []
+
+
+startwindow = tk.Tk()
+startwindow.title("Hanoi")
+startwindow.resizable(width=False, height=False)
+startwindow.geometry('400x300')
+
+
+l1 = tk.Label(startwindow, text='Towers of Hanoi', font=('Monotype Corsiva', 30, 'bold'))
+l1.grid(column=1, row=1, pady=30, padx=65) 
+size = startwindow.grid_size()
+
+
+def option_entry_window():
+
+  optionwindow = tk.Tk()
+  optionwindow.config(bg='grey87')
+  optionwindow.title("Options")
+  optionwindow.geometry('400x300')
+
+  l2 = tk.Label(optionwindow, text="\nPlease enter the number of disks to be used \n in the game (the lesser the better!)\n", font=('Monotype Corsiva', 18), bg='grey87')
+  l2.grid(column=0, row=1, padx=5)
+
+  options = tk.Entry(optionwindow, width=2, font=('Impact', 18))
+  options.grid(column=0, row=20)
+
+
+  def number_of_pegs():
+
+    inp = options.get()
+
+    def game_window():
+
+      gamewindow = tk.Toplevel()
+      gamewindow.title("The Game")
+      gamewindow.geometry('500x330')
+
+      l3 = tk.Label(gamewindow)
+      l3.grid(column=0, row=20)
+
+      c = tk.Canvas(gamewindow, bg='white', width=500, height=300)
+
+      base1 = c.create_rectangle(0, 75, 120, 85, fill='black')
+      base2 = c.create_rectangle(0, 75, 120, 85, fill='black')
+      base3 = c.create_rectangle(0, 75, 120, 85, fill='black')
+
+      c.move(base1, 30, 180)
+      c.move(base2, 190, 180)
+      c.move(base3, 350, 180)
+
+      pole1 = c.create_rectangle(40, -40, 50, 180, fill='black')
+      pole2 = c.create_rectangle(40, -40, 50, 180, fill='black')
+      pole3 = c.create_rectangle(40, -40, 50, 180, fill='black')
+
+      c.move(pole1, 45, 85)
+      c.move(pole2, 205, 85)
+      c.move(pole3, 365, 85)
+
+      polt1 = c.create_text(93, 293, text='Pole 1', font=('Monotype Corsiva', 21, 'bold'), tags=1)
+      polt2 = c.create_text(253, 293, text='Pole 2', font=('Monotype Corsiva', 21, 'bold'), tags=2)
+      polt3 = c.create_text(413, 293, text='Pole 3', font=('Monotype Corsiva', 21, 'bold'), tags=3)
+
+      x1, y1 = 0, 75
+      x2, y2 = 120, 85
+
+      xm, ym = 30, 180
+
+      colors = ["white", "grey", "red", "orange", "yellow", "green", "blue", "indigo", "violet", "gold", "dodgerblue"]
+
+
+      for i in range(1, int(inp) + 1):
+
+        x1 = x1
+        y1 = y1
+
+        x2 = x2 - 9
+        y2 = y1 + 20
+
+        tags = (i, 'p1')
+
+        col = random.choice(colors)
+        p = c.create_rectangle(x1, y1, x2, y2, fill=col, tags=tags)
+        colors.remove(col)
+        colors = colors
+
+        x1, y1 = x1, y1
+        x2, y2 = x2, y2
+
+        xm = xm + 4.5
+        ym = ym - 20
+
+        c.move(p, xm, ym)
+
+        xm = xm
+        ym = ym
+
+        t = c.create_text((x1 + xm + x2 + xm) / 2, ((y1 + ym + y2 + ym) / 2), text=i, font=('Impact', 12, 'bold'), tags=i)
+        tlist.append(t)
+
+        peglist.append(p)
+
+
+      opentwindow = tk.Toplevel()
+      opentwindow.config(bg='black')
+      opentwindow.title("Play")
+      opentwindow.geometry('30x330')
+
+      l4 = tk.Label(opentwindow, text="\n\nDisc number  ", font=('Monotype Corsiva', 14), fg='white', bg='black')
+      l4.grid(column=0, row=30)
+
+      l5 = tk.Label(opentwindow, text="Pole number  ", font=('Monotype Corsiva', 14), fg='white', bg='black')
+      l5.grid(column=0, row=60)
+
+      n_disc = tk.Entry(opentwindow, width=3)
+      n_disc.grid(column=2, row=30, pady=(50, 0))
+
+      n_pole = tk.Entry(opentwindow, width=3) 
+      n_pole.grid(column=2, row=60)
+
+      #for j in range(1, len(peglist)+1):  # list of all tags in the peglist
+      #  taggie = int(c.gettags(peglist[j-1])[0])
+      #  pegtaglist.append(taggie)
+
+
+      def operations():
+
+        disc = n_disc.get()
+        pole = n_pole.get()
+
+        pole1_id = list(c.find_withtag('p1'))
+        pole2_id = list(c.find_withtag('p2'))
+        pole3_id = list(c.find_withtag('p3'))
+
+        pole1_stock = []
+        pole2_stock = []
+        pole3_stock = []
+
+        for k1 in range(1, len(pole1_id) + 1):  
+          p1_item = int(list(c.gettags(pole1_id[k1 - 1]))[0])
+          pole1_stock.append(p1_item)
+
+        for k2 in range(1, len(pole2_id) + 1):
+          p2_item = int(list(c.gettags(pole2_id[k2 - 1]))[0])
+          pole2_stock.append(p2_item)
+
+        for k3 in range(1, len(pole3_id) + 1): 
+          p3_item = int(list(c.gettags(pole3_id[k3 - 1]))[0])
+          pole3_stock.append(p3_item)
+
+        for l1 in pole1_stock:
+          if l1 == int(disc):
+            disc_in_pole = 1
+            indec = pole1_stock.index(l1)
+
+        for l2 in pole2_stock:
+          if l2 == int(disc):
+            disc_in_pole = 2
+            indec = pole2_stock.index(l2)
+
+        for l3 in pole3_stock:
+          if l3 == int(disc):
+            disc_in_pole = 3
+            indec = pole3_stock.index(l3)
+
+        if int(disc) > int(inp):
+          messagebox.showinfo("Error", "Disc number greater than the number of discs")
+
+        if int(pole) == disc_in_pole:
+          messagebox.showinfo("Error", "Redundant move!")
+
+        if disc_in_pole == 1 :
+          if int(disc) < max(pole1_stock):
+            messagebox.showinfo("Error", "Please move only the topmost peg")
+        if disc_in_pole == 2 :
+          if int(disc) < max(pole2_stock):
+            messagebox.showinfo("Error", "Please move only the topmost peg")
+        if disc_in_pole == 3 :
+          if int(disc) < max(pole3_stock):
+            messagebox.showinfo("Error", "Please move only the topmost peg")
+
+        if int(pole) > 3:
+          messagebox.showinfo("Error", "Invalid pole number!")
+
+
+        if (int(pole) != disc_in_pole) and (int(pole) <= 3) :
+
+          if len(pole1_stock) != 0:
+            if (int(disc) == max(pole1_stock)):
+           
+              if int(pole) == 2:
+                if len(pole2_stock) == 0:
+                  c.move(pole1_id[indec], 160, 20*(len(pole1_id)-1))
+                  tind = tlist.index(pole1_id[indec] + 1)
+                  c.move(tlist[tind], 160, 20*(len(pole1_id)-1))
+                  c.dtag(pole1_id[indec], 'p1')
+                  c.addtag('p2', 'withtag', pole1_id[indec])
+                  pole2_id.append(pole1_id[indec])
+                  pole1_id.remove(pole1_id[indec])
+                if len(pole2_stock) != 0:
+                  if int(disc) < max(pole2_stock):
+                    messagebox.showinfo("Error", "Invalid move")
+                  else:
+                    diffy = int(c.coords(max(pole2_id))[1] - c.coords(pole1_id[indec])[1] - 20)
+                    c.move(pole1_id[indec], 160, diffy)
+                    tind = tlist.index(pole1_id[indec] + 1)
+                    c.move(tlist[tind], 160, diffy)
+                    c.dtag(pole1_id[indec], 'p1')
+                    c.addtag('p2', 'withtag', pole1_id[indec])
+                    pole2_id.append(pole1_id[indec])
+                    pole1_id.remove(pole1_id[indec])
+
+              if int(pole) == 3:
+                if len(pole3_stock) == 0:
+                  c.move(pole1_id[indec], 320, 20*(len(pole1_id)-1))
+                  tind = tlist.index(pole1_id[indec] + 1)
+                  c.move(tlist[tind], 320, 20*(len(pole1_id)-1))
+                  c.dtag(pole1_id[indec], 'p1')
+                  c.addtag('p3', 'withtag', pole1_id[indec])
+                  pole3_id.append(pole1_id[indec])
+                  pole1_id.remove(pole1_id[indec])
+                if len(pole3_stock) != 0:
+                  if int(disc) < max(pole3_stock):
+                    messagebox.showinfo("Error", "Invalid move")
+                  else:
+                    diffy = int(c.coords(max(pole3_id))[1] - c.coords(pole1_id[indec])[1] - 20)
+                    c.move(pole1_id[indec], 320, diffy)
+                    tind = tlist.index(pole1_id[indec] + 1)
+                    c.move(tlist[tind], 320, diffy)
+                    c.dtag(pole1_id[indec], 'p1')
+                    c.addtag('p3', 'withtag', pole1_id[indec])
+                    pole3_id.append(pole1_id[indec])
+                    pole1_id.remove(pole1_id[indec])
+
+
+          if len(pole2_stock) != 0:
+            if (int(disc) == max(pole2_stock)):
+
+              if int(pole) == 1:
+                if len(pole1_stock) == 0:
+                  c.move(pole2_id[indec], -160, 20*(len(pole2_id)-1))
+                  tind = tlist.index(pole2_id[indec] + 1)
+                  c.move(tlist[tind], -160, 20*(len(pole2_id)-1))
+                  c.dtag(pole2_id[indec], 'p2')
+                  c.addtag('p1', 'withtag', pole2_id[indec])
+                  pole1_id.append(pole2_id[indec])
+                  pole2_id.remove(pole2_id[indec])
+                if len(pole1_stock) != 0:
+                  if int(disc) < max(pole1_stock):
+                    messagebox.showinfo("Error", "Invalid move")
+                  else:
+                    diffy = int(c.coords(max(pole1_id))[1] - c.coords(pole2_id[indec])[1] - 20)
+                    c.move(pole2_id[indec], -160, diffy)
+                    tind = tlist.index(pole2_id[indec] + 1)
+                    c.move(tlist[tind], -160, diffy)
+                    c.dtag(pole2_id[indec], 'p2')
+                    c.addtag('p1', 'withtag', pole2_id[indec])
+                    pole1_id.append(pole2_id[indec])
+                    pole2_id.remove(pole2_id[indec])
+
+              if int(pole) == 3:
+                if len(pole3_stock) == 0:
+                  c.move(pole2_id[indec], 160, 20*(len(pole2_id)-1))
+                  tind = tlist.index(pole2_id[indec] + 1)
+                  c.move(tlist[tind], 160, 20*(len(pole2_id)-1))
+                  c.dtag(pole2_id[indec], 'p2')
+                  c.addtag('p3', 'withtag', pole2_id[indec])
+                  pole3_id.append(pole2_id[indec])
+                  pole2_id.remove(pole2_id[indec])
+                if len(pole3_stock) != 0:
+                  if int(disc) < max(pole3_stock):
+                    messagebox.showinfo("Error", "Invalid move")
+                  else:
+                    diffy = int(c.coords(max(pole3_id))[1] - c.coords(pole2_id[indec])[1] - 20)
+                    c.move(pole2_id[indec], 160, diffy)
+                    tind = tlist.index(pole2_id[indec] + 1)
+                    c.move(tlist[tind], 160, diffy)
+                    c.dtag(pole2_id[indec], 'p2')
+                    c.addtag('p3', 'withtag', pole2_id[indec])
+                    pole3_id.append(pole2_id[indec])
+                    pole2_id.remove(pole2_id[indec])
+
+          if len(pole3_stock) != 0:
+            if (int(disc) == max(pole3_stock)):
+
+              if int(pole) == 1:
+                if len(pole1_stock) == 0:
+                  c.move(pole3_id[indec], -320, 20*(len(pole3_id)-1))
+                  tind = tlist.index(pole3_id[indec] + 1)
+                  c.move(tlist[tind], -320, 20*(len(pole3_id)-1))
+                  c.dtag(pole3_id[indec], 'p3')
+                  c.addtag('p1', 'withtag', pole3_id[indec])
+                  pole1_id.append(pole3_id[indec])
+                  pole3_id.remove(pole3_id[indec])
+                if len(pole1_stock) != 0:
+                  if int(disc) < max(pole1_stock):
+                    messagebox.showinfo("Error", "Invalid move")
+                  else:
+                    diffy = int(c.coords(max(pole1_id))[1] - c.coords(pole3_id[indec])[1] - 20)
+                    c.move(pole3_id[indec], -320, diffy)
+                    tind = tlist.index(pole3_id[indec] + 1)
+                    c.move(tlist[tind], -320, diffy)
+                    c.dtag(pole3_id[indec], 'p3')
+                    c.addtag('p1', 'withtag', pole3_id[indec])
+                    pole1_id.append(pole3_id[indec])
+                    pole3_id.remove(pole3_id[indec])
+
+              if int(pole) == 2:
+                if len(pole2_stock) == 0:
+                  c.move(pole3_id[indec], -160, 20*(len(pole3_id)))
+                  tind = tlist.index(pole3_id[indec] + 1)
+                  c.move(tlist[tind], -160, 20*(len(pole3_id)))
+                  c.dtag(pole3_id[indec], 'p3')
+                  c.addtag('p2', 'withtag', pole3_id[indec])
+                  pole2_id.append(pole3_id[indec])
+                  pole3_id.remove(pole3_id[indec])
+                if len(pole2_stock) != 0:
+                  if int(disc) < max(pole2_stock):
+                    messagebox.showinfo("Error", "Invalid move")
+                  else:
+                    diffy = int(c.coords(max(pole2_id))[1] - c.coords(pole3_id[indec])[1] - 20)
+                    c.move(pole3_id[indec], -160, diffy)
+                    tind = tlist.index(pole3_id[indec] + 1)
+                    c.move(tlist[tind], -160, diffy)
+                    c.dtag(pole3_id[indec], 'p3')
+                    c.addtag('p2', 'withtag', pole3_id[indec])
+                    pole2_id.append(pole3_id[indec])
+                    pole3_id.remove(pole3_id[indec])
+
+
+        if len(pole2_id) == int(inp) or len(pole3_id) == int(inp):
+          messagebox.showinfo("Congrats!", "You did it!")
+          optionwindow.destroy()
+          gamewindow.destroy()
+          opentwindow.destroy()
+
+
+      go = tk.Button(opentwindow, text='Go!', font=('Monotype Corsiva', 15), bg='black', fg='green', height=1, width=4, command=operations)
+      go.grid(column=0, row=90, padx=(30, 5), pady=50) 
+
+
+      c.grid()
+
+
+    if int(inp) <= 10:
+      game_window()
+
+    else:
+      messagebox.showinfo("Error!", "Please enter a number less than 10")
+
+
+  to_the_game = tk.Button(optionwindow, text='To the Game!', font=('Monotype Corsiva', 15, 'bold'), bg='black', fg='red', height=1, width=10, command=number_of_pegs) # game_window
+  to_the_game.grid(column=0, row=40, pady=20)
+
+
+
+# play button
+play = tk.Button(startwindow, text='Play', font=('Monotype Corsiva', 15), bg='black', fg='green', height=1, width=6, command=option_entry_window)
+play.grid(column=1, row=2, padx=10, pady=10)
+
+
+
+startwindow.mainloop()
+
+
